@@ -8,6 +8,9 @@ export default class Player {
   falling = false;
   JUMP_SPEED = 0.6;
   GRAVITY = 0.4;
+  jump_sound = new Audio("./assets/sounds/jump.mp3")
+
+
 
   constructor(ctx, width, height, minJumpHeight, maxJumpHeight, scaleRatio) {
     this.ctx = ctx;
@@ -17,6 +20,7 @@ export default class Player {
     this.minJumpHeight = minJumpHeight;
     this.maxJumpHeight = maxJumpHeight;
     this.scaleRatio = scaleRatio;
+    this.jump_sound.volume = 0.3;
 
     this.x = 10 * scaleRatio;
     this.y = this.canvas.height - this.height - 1.5 * scaleRatio;
@@ -82,9 +86,12 @@ export default class Player {
   jump(frameTimeDelta) {
     if (this.jumpPressed) {
       this.jumpInProgress = true;
+      this.jump_sound.currentTime = 0; 
+      this.jump_sound.play();
     }
 
     if (this.jumpInProgress && !this.falling) {
+      
       if (
         this.y > this.canvas.height - this.minJumpHeight ||
         (this.y > this.canvas.height - this.maxJumpHeight && this.jumpPressed)
@@ -112,6 +119,7 @@ export default class Player {
         this.image = this.dinoRunImages[1];
       } else {
         this.image = this.dinoRunImages[0];
+
       }
       this.walkAnimationTimer = this.WALK_ANIMATION_TIMER;
     }

@@ -36,6 +36,10 @@ let gameSpeed = GAME_SPEED_START;
 let gameOver = false;
 let hasAddedEventListenersForRestart = false;
 let waitingToStart = true;
+let bgm = new Audio("./assets/sounds/bgm_mario.mp3");
+let lose_sound = new Audio("./assets/sounds/lose.mp3")
+bgm.volume = 0.5;
+lose_sound.volume = 0.5;
 
 function createSprites() {
   const playerWidthInGame = PLAYER_WIDTH * scaleRatio;
@@ -123,6 +127,7 @@ function showGameOver() {
   const x = canvas.width / 4.5;
   const y = canvas.height / 2;
   ctx.fillText("GAME OVER", x, y);
+  // lose_sound.play();
 }
 
 function setupGameReset() {
@@ -144,6 +149,11 @@ function reset() {
   cactiController.reset();
   score.reset();
   gameSpeed = GAME_SPEED_START;
+  if (bgm.paused){
+        bgm.play()
+    }
+
+    bgm.loop = true;
 }
 
 function showStartGameText() {
@@ -186,6 +196,8 @@ function gameLoop(currentTime) {
 
   if (!gameOver && cactiController.collideWith(player)) {
     gameOver = true;
+    lose_sound.play();
+    bgm.pause();
     setupGameReset();
     score.setHighScore();
   }
@@ -196,6 +208,7 @@ function gameLoop(currentTime) {
   score.draw();
 
   if (gameOver) {
+
     showGameOver();
   }
 
